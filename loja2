@@ -1,0 +1,64 @@
+import sqlite3
+
+# Conectar ao banco de dados (ou criar um se não existir)
+conn = sqlite3.connect('loja_roupas.db')
+
+# Criar um cursor para executar comandos SQL
+cursor = conn.cursor()
+
+# Criar tabela para produtos
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS produtos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    preco REAL NOT NULL,
+    quantidade INTEGER NOT NULL
+)
+''')
+
+# Criar tabela para clientes
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS clientes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    email TEXT NOT NULL,
+    telefone TEXT
+)
+''')
+
+# Criar tabela para vendas
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS vendas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cliente_id INTEGER,
+    produto_id INTEGER,
+    quantidade INTEGER NOT NULL,
+    data_venda TEXT NOT NULL,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+    FOREIGN KEY (produto_id) REFERENCES produtos(id)
+)
+''')
+
+# Exemplo de inserção de produto
+cursor.execute('''
+INSERT INTO produtos (nome, preco, quantidade) 
+VALUES ('Camiseta', 49.99, 100)
+''')
+
+# Exemplo de inserção de cliente
+cursor.execute('''
+INSERT INTO clientes (nome, email, telefone) 
+VALUES ('João Silva', 'joao@gmail.com', '1234-5678')
+''')
+
+# Exemplo de inserção de venda
+cursor.execute('''
+INSERT INTO vendas (cliente_id, produto_id, quantidade, data_venda) 
+VALUES (1, 1, 2, '2024-09-01')
+''')
+
+# Salvar (commit) as mudanças
+conn.commit()
+
+# Fechar a conexão
+conn.close()        
